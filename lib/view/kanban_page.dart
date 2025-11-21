@@ -1,41 +1,53 @@
+// lib/view/kanban_page.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../view_model/projet_view_model.dart';
 
-// Ceci sera ta page principale du Kanban
 class KanbanPage extends StatelessWidget {
   const KanbanPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // On récupère le ViewModel (MVVM)
+    final projectsViewModel = context.watch<ProjectsViewModel>();
+
     return Scaffold(
-      // La barre du haut avec le titre
+      // 🔹 Barre de navigation (AppBar) avec bouton "+"
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 223, 164, 16),
-        title: const Text("Mon Kanban Board"),
-        centerTitle: true, // centre le texte dans l'AppBar
+        title: const Text("Mes projets"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: "Créer un projet",
+            onPressed: () {
+              // Appel MVVM : la View demande au ViewModel de créer un projet
+              projectsViewModel.createProject("Nouveau projet");
+              // Pour le moment ça ne fait qu'ajouter en mémoire et logguer
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Projet créé (en mémoire)")),
+              );
+            },
+          ),
+        ],
       ),
 
-      // Le corps de la page
+      // 🔹 Corps : juste le grand rectangle pour le moment
       body: Padding(
-        padding: const EdgeInsets.all(16.0), // un peu d'espace autour
+        padding: const EdgeInsets.all(16.0),
         child: Center(
-          // Le grand rectangle où on mettra les listes plus tard
           child: Container(
-            // Occupe toute la largeur dispo
             width: double.infinity,
-            // Hauteur fixe pour bien voir le rectangle (tu peux ajuster)
             height: 400,
-
-            // Style du rectangle
             decoration: BoxDecoration(
-              color: Colors.grey.shade200, // fond gris clair
-              borderRadius: BorderRadius.circular(16), // bords arrondis
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.grey, // contour gris
+                color: Colors.grey,
                 width: 2,
               ),
             ),
-
-            // Contenu intérieur du rectangle
             child: const Center(
               child: Text(
                 "Ici tu ajouteras tes listes (À faire, En cours, Terminé...)",

@@ -1,12 +1,23 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-// 🔽 importe directement ta page principale (Kanban ou autre)
+import 'package:provider/provider.dart';
 import 'view/kanban_page.dart';
+import './view_model/projet_view_model.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ProjectsViewModel(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
+// Widget racine de l'application
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -19,8 +30,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-
-      // 🔽 On démarre directement sur UNE page
       home: const KanbanPage(),
     );
   }

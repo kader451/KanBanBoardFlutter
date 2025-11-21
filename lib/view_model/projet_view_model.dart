@@ -49,4 +49,10 @@ class ProjectsViewModel extends ChangeNotifier {
     _tasks.add(newTask);
     notifyListeners();
   }
+
+  void deleteTask(int id) {
+  _tasks.removeWhere((t) => t.id == id);
+  notifyListeners();
+}
+
 }

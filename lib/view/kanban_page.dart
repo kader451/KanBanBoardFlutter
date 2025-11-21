@@ -1,66 +1,89 @@
-// lib/view/kanban_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../view_model/projet_view_model.dart';
+import '../models/projets.dart';
+import 'components/project_title.dart';
+import 'components/status_column.dart';
+import 'components/create_project_dialog.dart';
 
 class KanbanPage extends StatelessWidget {
   const KanbanPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // On récupère le ViewModel (MVVM)
-    final projectsViewModel = context.watch<ProjectsViewModel>();
+    final vm = context.watch<ProjectsViewModel>();
+    final Project? project = vm.currentProject;
 
     return Scaffold(
-      // 🔹 Barre de navigation (AppBar) avec bouton "+"
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 223, 164, 16),
-        title: const Text("Mes projets"),
-        centerTitle: true,
+        title: const Text("Kanban"),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            tooltip: "Créer un projet",
             onPressed: () {
-              // Appel MVVM : la View demande au ViewModel de créer un projet
-              projectsViewModel.createProject("Nouveau projet");
-              // Pour le moment ça ne fait qu'ajouter en mémoire et logguer
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Projet créé (en mémoire)")),
+              showDialog(
+                context: context,
+                builder: (_) => CreateProjectDialog(
+                  onConfirm: (name) => vm.createOrSetCurrentProject(name),
+                ),
               );
             },
           ),
         ],
       ),
 
-      // 🔹 Corps : juste le grand rectangle pour le moment
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Container(
-            width: double.infinity,
-            height: 400,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.grey,
-                width: 2,
-              ),
-            ),
-            child: const Center(
+      body: project == null
+          ? const Center(
               child: Text(
-                "Ici tu ajouteras tes listes (À faire, En cours, Terminé...)",
+                "Clique sur + pour créer un projet.",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  ProjectTitle(title: project.name),
+                  const SizedBox(height: 16),
+
+                  Expanded(
+                    child: Row(
+                      children: const [
+                        Expanded(
+                          child: StatusColumn(
+                            title: "À faire",
+                            statusKey: "todo",
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: StatusColumn(
+                            title: "En cours",
+                            statusKey: "doing",
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: StatusColumn(
+                            title: "À tester",
+                            statusKey: "testing",
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: StatusColumn(
+                            title: "Terminé",
+                            statusKey: "done",
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

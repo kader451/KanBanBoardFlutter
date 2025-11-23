@@ -17,13 +17,17 @@ class CreateTaskDialog extends StatelessWidget {
         children: [
           TextField(
             controller: titleController,
-            decoration: const InputDecoration(labelText: "Titre"),
+            decoration: const InputDecoration(
+              labelText: "Titre",
+            ),
           ),
           const SizedBox(height: 8),
           TextField(
             controller: descController,
+            decoration: const InputDecoration(
+              labelText: "Description",
+            ),
             maxLines: 3,
-            decoration: const InputDecoration(labelText: "Description"),
           ),
         ],
       ),

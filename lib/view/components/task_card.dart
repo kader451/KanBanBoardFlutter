@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../models/taches.dart';
 import '../../view_model/projet_view_model.dart';
 
@@ -16,27 +17,37 @@ class TaskCard extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Stack(
           children: [
-            // Contenu principal
+            // Contenu principal de la carte
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   task.title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                if (task.description != null) ...[
+                if (task.description != null &&
+                    task.description!.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  Text(task.description!, style: const TextStyle(fontSize: 12)),
+                  Text(
+                    task.description!,
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ],
               ],
             ),
 
-            // Bouton supprimer (en haut à droite)
+            // Bouton supprimer en haut à droite
             Positioned(
               top: 0,
               right: 0,
               child: IconButton(
-                icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                icon: const Icon(
+                  Icons.delete,
+                  size: 18,
+                  color: Colors.red,
+                ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 onPressed: () {

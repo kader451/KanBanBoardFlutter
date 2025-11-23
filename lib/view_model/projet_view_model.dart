@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../models/projets.dart'; // <-- classe Project
-import '../models/taches.dart'; // <-- classe Task
+import '../models/projets.dart'; // classe Project
+import '../models/taches.dart'; // classe Task
 
 class ProjectsViewModel extends ChangeNotifier {
   Project? _currentProject;
@@ -13,7 +13,7 @@ class ProjectsViewModel extends ChangeNotifier {
   // Tous les projets
   List<Project> get allProjects => List.unmodifiable(_projects);
 
-  // Créer un nouveau projet
+  // Créer un nouveau projet et le définir comme courant
   void createOrSetCurrentProject(String name, {String? description}) {
     final newProject = Project(
       id: _projects.length + 1,
@@ -27,7 +27,7 @@ class ProjectsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Changer de projet
+  // Changer de projet courant
   void setCurrentProject(Project project) {
     _currentProject = project;
     notifyListeners();
@@ -41,6 +41,7 @@ class ProjectsViewModel extends ChangeNotifier {
         .toList();
   }
 
+  // Ajouter une tâche dans un statut donné
   void addTask({
     required String title,
     String? description,
@@ -60,8 +61,28 @@ class ProjectsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Supprimer une tâche
   void deleteTask(int id) {
     _tasks.removeWhere((t) => t.id == id);
+    notifyListeners();
+  }
+
+  // 🔹 Déplacer une tâche vers une autre colonne (changer de statut)
+  void moveTaskToStatus(int taskId, String newStatus) {
+    final index = _tasks.indexWhere((t) => t.id == taskId);
+    if (index == -1) return;
+
+    final old = _tasks[index];
+
+    final updated = Task(
+      id: old.id,
+      projectId: old.projectId,
+      title: old.title,
+      description: old.description,
+      status: newStatus,
+    );
+
+    _tasks[index] = updated;
     notifyListeners();
   }
 }

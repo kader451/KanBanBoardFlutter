@@ -1,9 +1,10 @@
 class Task {
-  final int id;
-  final int projectId;         // à quel projet cette tâche appartient
+  final String id;
+  final String projectId;
   final String title;
   final String? description;
-  final String status;         // "todo", "doing", "testing", "done"
+  final String status;
+  final DateTime? createdAt;
 
   Task({
     required this.id,
@@ -11,15 +12,30 @@ class Task {
     required this.title,
     this.description,
     required this.status,
+    this.createdAt,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
-      id: json['id'] as int,
-      projectId: json['projectId'] as int,
+      id: json['_id'] as String,
+      projectId: json['projectId'] as String,
       title: json['title'] as String,
       description: json['description'] as String?,
       status: json['status'] as String,
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'] as String)
+          : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'projectId': projectId,
+      'title': title,
+      'description': description,
+      'status': status,
+      'createdAt': createdAt?.toIso8601String(),
+    };
   }
 }

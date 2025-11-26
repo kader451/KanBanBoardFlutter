@@ -1,52 +1,58 @@
 import 'package:flutter/material.dart';
 
-class CreateTaskDialog extends StatelessWidget {
-  final Function(String title, String? description) onConfirm;
+class CreateTaskDialog extends StatefulWidget {
+  final void Function(String title, String? description) onConfirm;
 
   const CreateTaskDialog({super.key, required this.onConfirm});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController descController = TextEditingController();
+  State<CreateTaskDialog> createState() => _CreateTaskDialogState();
+}
 
+class _CreateTaskDialogState extends State<CreateTaskDialog> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Nouvelle étiquette"),
+      title: const Text("Nouvelle tâche"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
-            controller: titleController,
+            controller: _titleController,
             decoration: const InputDecoration(
-              labelText: "Titre",
+              hintText: "Titre de la tâche",
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           TextField(
-            controller: descController,
+            controller: _descController,
             decoration: const InputDecoration(
-              labelText: "Description",
+              hintText: "Description (optionnel)",
             ),
-            maxLines: 3,
           ),
         ],
       ),
-      actions: [
+      actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text("Annuler"),
         ),
-        ElevatedButton(
+        TextButton(
           onPressed: () {
-            final title = titleController.text.trim();
-            final desc = descController.text.trim();
+            final title = _titleController.text.trim();
+            final desc = _descController.text.trim().isEmpty
+                ? null
+                : _descController.text.trim();
 
             if (title.isNotEmpty) {
-              onConfirm(title, desc.isEmpty ? null : desc);
-              Navigator.pop(context);
+              widget.onConfirm(title, desc);
             }
+            Navigator.pop(context);
           },
-          child: const Text("Créer"),
+          child: const Text("Ajouter"),
         ),
       ],
     );

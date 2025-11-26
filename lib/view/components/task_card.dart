@@ -6,56 +6,66 @@ import '../../view_model/projet_view_model.dart';
 
 class TaskCard extends StatelessWidget {
   final Task task;
+  final VoidCallback? onDelete;
 
-  const TaskCard({super.key, required this.task});
+  const TaskCard({
+    super.key,
+    required this.task,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 1,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Stack(
-          children: [
-            // Contenu principal de la carte
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  task.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (task.description != null &&
-                    task.description!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    task.description!,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              ],
-            ),
+      elevation: 2, 
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+      child: InkWell(
+        onLongPress: onDelete, 
+        child: Padding(
+          padding: const EdgeInsets.all(12.0), 
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            // Bouton supprimer en haut à droite
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.delete,
-                  size: 18,
-                  color: Colors.red,
+              // Affiche le titre d'une tache
+              Text(
+                task.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () {
-                  context.read<ProjectsViewModel>().deleteTask(task.id);
-                },
               ),
-            ),
-          ],
+
+              const SizedBox(height: 4),
+
+              // La description si elle est presente 
+              if (task.description != null && task.description!.isNotEmpty)
+                Text(
+                  task.description!,
+                  style: const TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+
+              const SizedBox(height: 10),
+
+           
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  key: const Key("deleteButton"),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.red,
+                  ),
+                  onPressed: onDelete ??
+                      () {
+                        context
+                            .read<ProjectsViewModel>()
+                            .deleteTask(task.id);
+                      },
+                  child: const Text("Supprimer"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

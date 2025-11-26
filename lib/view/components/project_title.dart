@@ -11,10 +11,10 @@ class ProjectTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      title,
-      textAlign: TextAlign.center,
+      title, 
+      textAlign: TextAlign.center, 
       style: const TextStyle(
-        fontSize: 24,
+        fontSize: 24, 
         fontWeight: FontWeight.bold,
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'kanban_page.dart';
 import 'projects_list_page.dart';
 
@@ -10,30 +11,27 @@ class MainNavigation extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigation> {
-  int _index = 0;
+  int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    KanbanPage(),      // Projet en cours
-    ProjectsListPage() // Liste des projets
-  ];
+  static const List<Widget> _pages = <Widget>[KanbanPage(), ProjectsListPage()];
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_index],
+      body: Center(child: _pages.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: "Kanban",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: "Projets",
-          ),
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Kanban'),
+          BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'Projets'),
         ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.orange,
+        onTap: _onItemTapped,
       ),
     );
   }

@@ -1,32 +1,39 @@
 import 'package:flutter/material.dart';
 
-class CreateProjectDialog extends StatelessWidget {
-  final Function(String name) onConfirm;
+class CreateProjectDialog extends StatefulWidget {
+  final void Function(String name) onConfirm;
 
   const CreateProjectDialog({super.key, required this.onConfirm});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController();
+  State<CreateProjectDialog> createState() => _CreateProjectDialogState();
+}
 
+class _CreateProjectDialogState extends State<CreateProjectDialog> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Créer un projet"),
       content: TextField(
-        controller: controller,
-        decoration: const InputDecoration(hintText: "Nom du projet"),
+        controller: _controller,
+        decoration: const InputDecoration(
+          hintText: "Nom du projet",
+        ),
       ),
-      actions: [
+      actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text("Annuler"),
         ),
-        ElevatedButton(
+        TextButton(
           onPressed: () {
-            final name = controller.text.trim();
+            final name = _controller.text.trim();
             if (name.isNotEmpty) {
-              onConfirm(name);
-              Navigator.pop(context);
+              widget.onConfirm(name);
             }
+            Navigator.pop(context);
           },
           child: const Text("Créer"),
         ),

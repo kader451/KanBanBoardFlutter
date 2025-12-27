@@ -33,13 +33,17 @@ class StatusColumn extends StatelessWidget {
     final List<Task> tasks = vm.tasksByStatus(statusKey);
 
     return DragTarget<TaskDragData>(
-      onWillAccept: (data) {
+      onWillAcceptWithDetails: (details) {
         // On accepte toujours, même si ça vient de la même colonne
         return true;
       },
-      onAccept: (data) {
+      onAcceptWithDetails: (details) {
+        final data = details.data;
         // On demande simplement au ViewModel de changer le statut
-        vm.moveTaskToStatus(data.taskId, statusKey);
+        // Seulement si on change de colonne
+        if (data.fromStatus != statusKey) {
+          vm.moveTaskToStatus(data.taskId, statusKey);
+        }
       },
       builder: (context, candidateData, rejectedData) {
         final isHighlighted = candidateData.isNotEmpty;
@@ -99,10 +103,10 @@ class StatusColumn extends StatelessWidget {
                         itemCount: tasks.length,
                         separatorBuilder: (_, __) =>
                             const SizedBox(height: 6),
-                        itemBuilder: (_, index) {
+                        itemBuilder: (context, index) {
                           final task = tasks[index];
 
-                          return LongPressDraggable<TaskDragData>(
+                          return Draggable<TaskDragData>(
                             data: TaskDragData(
                               taskId: task.id,
                               fromStatus: statusKey,
@@ -121,7 +125,10 @@ class StatusColumn extends StatelessWidget {
                               opacity: 0.4,
                               child: TaskCard(task: task),
                             ),
-                            child: TaskCard(task: task),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 4),
+                              child: TaskCard(task: task),
+                            ),
                           );
                         },
                       ),

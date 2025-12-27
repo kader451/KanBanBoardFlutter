@@ -11,7 +11,6 @@ class Project {
     this.isArchived = false,
   });
 
-  // Factory pour créer un Project depuis du JSON
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
       id: json['id'] as int,
